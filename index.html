@@ -911,25 +911,61 @@ const HEADERS = ['id','title','desc','cat','due','prio','status','created'];
 let _tokenClient = null;
 let _accessToken  = null;
 
+function saveToken(token, expiresIn) {
+  const expiresAt = Date.now() + (expiresIn - 60) * 1000; // 提前 60 秒視為過期
+  localStorage.setItem('gy-sheets-token', JSON.stringify({ token, expiresAt }));
+  _accessToken = token;
+}
+
+function loadToken() {
+  try {
+    const stored = JSON.parse(localStorage.getItem('gy-sheets-token') || 'null');
+    if (stored && stored.expiresAt > Date.now()) {
+      _accessToken = stored.token;
+      return true;
+    }
+  } catch(e) {}
+  return false;
+}
+
 function initSheetsAuth() {
   if (typeof google === 'undefined') return;
   _tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: CLIENT_ID,
     scope: 'https://www.googleapis.com/auth/spreadsheets',
     callback: async (resp) => {
-      if (resp.error) { setSyncLabel('連線失敗'); return; }
-      _accessToken = resp.access_token;
+      if (resp.error) {
+        // 靜默取得失敗，改用互動模式
+        if (resp.error === 'interaction_required' || resp.error === 'user_logged_out') {
+          _tokenClient.requestAccessToken({ prompt: 'consent' });
+        } else {
+          setSyncLabel('連線失敗');
+        }
+        return;
+      }
+      saveToken(resp.access_token, resp.expires_in || 3600);
+      setSyncLabel('已連線', false);
+      document.getElementById('sync-btn').style.borderColor = '#4ade80';
       await sheetsSetup();
       await sheetsSyncDown();
     },
   });
+
+  // 頁面載入：若有有效 token 則靜默同步，否則嘗試靜默取得
+  if (loadToken()) {
+    setSyncLabel('同步中…', true);
+    sheetsSyncDown();
+  } else {
+    // 嘗試靜默取得（不跳視窗），使用者曾授權過即可成功
+    _tokenClient.requestAccessToken({ prompt: '' });
+  }
 }
 
 async function ensureAuth() {
   if (_accessToken) return true;
   if (!_tokenClient) { alert('Google 授權元件尚未載入，請稍後再試'); return false; }
   _tokenClient.requestAccessToken({ prompt: 'consent' });
-  return false; // callback will continue
+  return false;
 }
 
 function setSyncLabel(text, spinning = false) {
