@@ -651,8 +651,13 @@ function renderTask(t) {
   const prioClass = { urgent:'prio-urgent', high:'prio-high', normal:'prio-normal' }[t.prio] || 'prio-normal';
   const catTag = `<span class="tag cat-${t.cat}" style="font-size:10px;padding:2px 8px">${t.cat}</span>`;
 
-  let statusTag = '';
-  if (t.status === 'doing') statusTag = `<span class="tag tag-blue" style="font-size:10px;padding:2px 8px">進行中</span>`;
+  const statusMap = {
+    todo:  { label:'待辦',  cls:'tag-gray', next:'doing' },
+    doing: { label:'進行中', cls:'tag-blue', next:'done'  },
+    done:  { label:'已完成', cls:'tag-green', next:'todo' },
+  };
+  const sm = statusMap[t.status] || statusMap.todo;
+  const statusTag = `<button class="tag ${sm.cls}" style="font-size:10px;padding:2px 10px;cursor:pointer;border:0;transition:opacity .12s" onclick="cycleStatus('${t.id}',event)" title="點擊切換狀態">${sm.label}</button>`;
 
   let dueLine = '';
   if (t.due) {
@@ -703,6 +708,15 @@ function updateStats() {
 }
 
 /* ── Task actions ── */
+function cycleStatus(id, e) {
+  e.stopPropagation();
+  const t = tasks.find(x => x.id === id);
+  if (!t) return;
+  const next = { todo:'doing', doing:'done', done:'todo' };
+  t.status = next[t.status] || 'todo';
+  save(); render();
+}
+
 function toggleDone(id, e) {
   e.stopPropagation();
   const t = tasks.find(x => x.id === id);
