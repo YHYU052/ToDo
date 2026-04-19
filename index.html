@@ -218,11 +218,16 @@ input, textarea, select { font-family: var(--font-sans); }
   transition: all var(--dur-fast) var(--ease-out);
   cursor: pointer;
 }
-.task-item:hover { border-color: var(--border-strong); background: var(--bg-raised); }
+.task-item:hover { border-color: var(--border-strong); }
 .task-item.overdue { border-left: 3px solid #f87171; }
 .task-item.today   { border-left: 3px solid var(--gy-orange); }
-.task-item.done    { opacity: .5; }
-.task-item.done .task-title { text-decoration: line-through; color: var(--fg3); }
+
+/* status backgrounds */
+.task-item.status-todo  { background: #1e1e1e; }
+.task-item.status-doing { background: rgba(221,86,28,.18); border-color: rgba(221,86,28,.4); }
+.task-item.status-doing:hover { background: rgba(221,86,28,.25); border-color: rgba(221,86,28,.6); }
+.task-item.status-done  { background: #161616; opacity: .6; }
+.task-item.status-done .task-title { text-decoration: line-through; color: var(--fg3); }
 
 /* checkbox */
 .task-check {
@@ -713,7 +718,7 @@ function renderTask(t) {
     dueLine = `<span class="task-date${cls}">${icon}${label}</span>`;
   }
 
-  return `<div class="task-item ${dc} ${isDone?'done':''}" data-id="${t.id}">
+  return `<div class="task-item ${dc} status-${t.status}" data-id="${t.id}">
     <div class="task-check ${isDone?'checked':''}" onclick="toggleDone('${t.id}',event)">
       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
     </div>
