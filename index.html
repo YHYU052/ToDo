@@ -736,7 +736,7 @@ function renderTask(t) {
         ${dueLine}
       </div>
     </div>
-    <div class="task-desc-col">${t.desc ? escHtml(t.desc) : '<span style="color:var(--fg3);font-style:italic;font-size:12px">無備註</span>'}</div>
+    <div class="task-desc-col">${t.desc ? escHtml(t.desc) : ''}</div>
     ${stepper}
     <div class="task-actions">
       <button class="btn-icon" title="編輯" onclick="editTask('${t.id}',event)">
