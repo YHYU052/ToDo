@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>行政代辦清單 · 柑園國中</title>
+  <title>行政待辦清單 · 柑園國中</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700;800&display=swap">
   <script src="https://accounts.google.com/gsi/client" onload="initSheetsAuth()" async defer></script>
@@ -416,7 +416,7 @@ select.form-control option { background: #1c1c1c; }
     </a>
     <div class="nav-spacer"></div>
     <div style="text-align:right">
-      <div class="nav-title">行政代辦清單</div>
+      <div class="nav-title">行政待辦清單</div>
       <div class="nav-subtitle" id="nav-date"></div>
     </div>
     <button class="btn btn-ghost" id="sync-btn" onclick="sheetsSync()" style="font-size:12px;padding:7px 12px">
@@ -999,7 +999,7 @@ async function sheetsSetup() {
       method: 'POST',
       headers: { Authorization: `Bearer ${_accessToken}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ requests: [{ updateSpreadsheetProperties: {
-        properties: { title: '行政代辦清單' }, fields: 'title'
+        properties: { title: '行政待辦清單' }, fields: 'title'
       }}]})
     });
     // Check if headers exist
