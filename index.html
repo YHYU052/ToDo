@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>行政代辦清單 · 柑園國中</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700;800&display=swap">
+  <script src="https://accounts.google.com/gsi/client" onload="initSheetsAuth()" async defer></script>
+  <style>
+/* ── Ganyuan Design Tokens ───────────────────────── */
+:root {
+  --gy-orange:     #DD561C;
+  --gy-orange-600: #C24812;
+  --gy-orange-700: #A03A0B;
+  --gy-orange-400: #E97540;
+  --gy-orange-200: #F5C4A8;
+  --gy-orange-50:  #FDF2EB;
+  --gy-black:      #0B0B0B;
+  --gy-ink:        #1A1A1A;
+  --gy-graphite:   #2E2E2E;
+  --gy-gray-800:   #3D3D3D;
+  --gy-gray-700:   #575757;
+  --gy-gray-500:   #8A8A8A;
+  --gy-gray-400:   #B5B5B5;
+  --gy-gray-300:   #D6D6D6;
+  --gy-gray-200:   #E8E8E8;
+  --gy-gray-100:   #F3F3F3;
+  --gy-white:      #FFFFFF;
+
+  --bg:        #111111;
+  --bg-alt:    #0B0B0B;
+  --bg-surface:#1A1A1A;
+  --bg-raised: #222222;
+  --fg1:       #F3F3F3;
+  --fg2:       #B5B5B5;
+  --fg3:       #6B6B6B;
+  --border:    #2E2E2E;
+  --border-strong: #444444;
+  --accent:    var(--gy-orange);
+
+  --font-display: 'JetBrains Mono', ui-monospace, monospace;
+  --font-sans:    'Noto Sans TC', system-ui, 'PingFang TC', sans-serif;
+
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px;
+  --sp-5:20px; --sp-6:24px; --sp-8:32px; --sp-10:40px;
+  --sp-12:48px; --sp-16:64px;
+
+  --r-xs:2px; --r-sm:4px; --r-md:8px; --r-lg:14px; --r-xl:22px; --r-pill:999px;
+
+  --shadow-xs: 0 1px 0 rgba(11,11,11,.06);
+  --shadow-sm: 0 1px 2px rgba(11,11,11,.08);
+  --shadow-md: 0 4px 14px rgba(11,11,11,.10);
+  --shadow-lg: 0 12px 32px rgba(11,11,11,.16);
+  --shadow-orange: 0 8px 24px rgba(221,86,28,.28);
+
+  --ease-out: cubic-bezier(.2,.7,.2,1);
+  --dur-fast: 120ms;
+  --dur-med:  220ms;
+  --container: 1100px;
+  --nav-h: 72px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { font-family: var(--font-sans); font-size: 16px; background: var(--bg-alt); color: var(--fg1); -webkit-font-smoothing: antialiased; min-height: 100vh; }
+button { font-family: var(--font-sans); cursor: pointer; border: 0; }
+input, textarea, select { font-family: var(--font-sans); }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #1a1a1a; }
+::-webkit-scrollbar-thumb { background: #3d3d3d; border-radius: 3px; }
+
+.eyebrow { font-family: var(--font-display); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .16em; color: var(--gy-orange); }
+.mono    { font-family: var(--font-display); }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 16px; border-radius: var(--r-md);
+  font-weight: 600; font-size: 13px;
+  transition: background var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+}
+.btn-primary { background: var(--gy-orange); color: #fff; }
+.btn-primary:hover { background: var(--gy-orange-400); box-shadow: var(--shadow-orange); }
+.btn-secondary { background: var(--gy-ink); color: #fff; border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--gy-graphite); }
+.btn-ghost { background: transparent; color: var(--fg2); border: 1.5px solid var(--border); }
+.btn-ghost:hover { border-color: var(--border-strong); color: var(--fg1); }
+.btn-danger { background: #3b1010; color: #f87171; border: 1px solid #5c2020; }
+.btn-danger:hover { background: #5c2020; }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn-icon { padding: 7px; border-radius: var(--r-md); background: transparent; color: var(--fg3); border: 1px solid transparent; transition: all var(--dur-fast); }
+.btn-icon:hover { background: var(--bg-raised); color: var(--fg1); border-color: var(--border); }
+
+/* ── Tags / Badges ── */
+.tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: var(--r-pill);
+  font-size: 11px; font-weight: 600; letter-spacing: .02em; white-space: nowrap;
+}
+.tag .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.tag-orange { background: var(--gy-orange); color: #fff; }
+.tag-tint   { background: rgba(221,86,28,.18); color: var(--gy-orange-400); }
+.tag-ink    { background: #2a2a2a; color: var(--fg1); border: 1px solid var(--border); }
+.tag-red    { background: #3b1010; color: #f87171; }
+.tag-yellow { background: #2d2610; color: #facc15; }
+.tag-green  { background: #0f2d1a; color: #4ade80; }
+.tag-blue   { background: #0f1f2d; color: #60a5fa; }
+.tag-purple { background: #1f0f2d; color: #c084fc; }
+.tag-gray   { background: #252525; color: var(--fg3); }
+
+/* ── Cards ── */
+.card {
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: var(--sp-5);
+  box-shadow: 0 2px 8px rgba(0,0,0,.35);
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+
+/* ── Nav ── */
+#nav {
+  position: sticky; top: 0; z-index: 20;
+  height: var(--nav-h);
+  background: rgba(17,17,17,.92); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+}
+.nav-inner {
+  max-width: var(--container); margin: 0 auto; width: 100%;
+  padding: 0 var(--sp-6); display: flex; align-items: center; gap: 16px;
+}
+.nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-brand-text .school-name { font-weight: 900; font-size: 15px; color: var(--fg1); }
+.nav-brand-text .school-sub  { font-family: var(--font-display); font-size: 9px; letter-spacing: .16em; color: var(--gy-orange); text-transform: uppercase; margin-top: 2px; }
+.nav-spacer { flex: 1; }
+.nav-title  { font-family: var(--font-display); font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .12em; color: var(--fg1); }
+.nav-subtitle { font-size: 11px; color: var(--fg3); margin-top: 1px; }
+.orange-bar { height: 4px; background: var(--gy-orange); }
+
+/* ── Stats bar ── */
+#stats-bar {
+  background: #0d0d0d;
+  border-bottom: 1px solid var(--border);
+  padding: var(--sp-4) var(--sp-6);
+}
+.stats-inner {
+  max-width: var(--container); margin: 0 auto;
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--sp-6);
+}
+.stat-item { display: flex; flex-direction: column; gap: 4px; }
+.stat-value {
+  font-family: var(--font-display); font-weight: 800; font-size: 24px;
+  text-transform: uppercase; letter-spacing: -.01em; color: var(--fg1); line-height: 1.1;
+}
+.stat-value.accent { color: var(--gy-orange); }
+.stat-value.danger { color: #f87171; }
+.stat-value.success { color: #4ade80; }
+.stat-label { font-size: 11px; color: var(--fg3); letter-spacing: .04em; }
+
+/* ── Toolbar ── */
+#toolbar {
+  max-width: var(--container); margin: 0 auto;
+  padding: var(--sp-5) var(--sp-6) var(--sp-3);
+  display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+.filter-row { display: flex; gap: var(--sp-2); flex-wrap: wrap; align-items: center; }
+.filter-btn {
+  padding: 6px 14px; border-radius: var(--r-md);
+  font-size: 12px; font-weight: 600;
+  background: var(--bg-surface); color: var(--fg3);
+  border: 1px solid var(--border);
+  transition: all var(--dur-fast) var(--ease-out);
+}
+.filter-btn:hover { border-color: var(--border-strong); color: var(--fg1); }
+.filter-btn.active { background: var(--gy-orange); color: #fff; border-color: var(--gy-orange); }
+
+/* ── Search ── */
+.search-wrap { position: relative; }
+.search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--fg3); pointer-events: none; }
+#search-input {
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: var(--r-md); color: var(--fg1); font-size: 13px;
+  padding: 8px 12px 8px 34px; width: 220px; outline: none;
+  transition: border-color var(--dur-fast);
+}
+#search-input:focus { border-color: var(--gy-orange); }
+#search-input::placeholder { color: var(--fg3); }
+
+/* ── Main layout ── */
+#main { max-width: var(--container); margin: 0 auto; padding: var(--sp-3) var(--sp-6) var(--sp-12); }
+
+/* ── Group headers ── */
+.group-header {
+  display: flex; align-items: center; gap: var(--sp-3);
+  margin: var(--sp-6) 0 var(--sp-3);
+}
+.group-header-label {
+  font-family: var(--font-display); font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .12em; color: var(--fg3);
+}
+.group-header-line { flex: 1; height: 1px; background: var(--border); }
+.group-header-count {
+  font-family: var(--font-display); font-size: 11px; color: var(--fg3);
+  background: var(--bg-surface); border: 1px solid var(--border);
+  padding: 2px 8px; border-radius: var(--r-pill);
+}
+
+/* ── Task items ── */
+.task-list { display: flex; flex-direction: column; gap: 6px; }
+
+.task-item {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: start;
+  gap: var(--sp-3);
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: var(--sp-4);
+  transition: all var(--dur-fast) var(--ease-out);
+  cursor: pointer;
+}
+.task-item:hover { border-color: var(--border-strong); background: var(--bg-raised); }
+.task-item.overdue { border-left: 3px solid #f87171; }
+.task-item.today   { border-left: 3px solid var(--gy-orange); }
+.task-item.done    { opacity: .5; }
+.task-item.done .task-title { text-decoration: line-through; color: var(--fg3); }
+
+/* checkbox */
+.task-check {
+  width: 20px; height: 20px; border-radius: var(--r-sm);
+  border: 2px solid var(--border-strong); background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 2px;
+  transition: all var(--dur-fast) var(--ease-out); cursor: pointer;
+}
+.task-check:hover { border-color: var(--gy-orange); }
+.task-check.checked { background: var(--gy-orange); border-color: var(--gy-orange); }
+.task-check.checked svg { display: block; }
+.task-check svg { display: none; color: #fff; }
+
+/* body */
+.task-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.task-title { font-weight: 600; font-size: 14px; color: var(--fg1); line-height: 1.4; word-break: break-word; }
+.task-desc  { font-size: 12px; color: var(--fg3); line-height: 1.5; word-break: break-word; }
+.task-meta  { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 2px; }
+.task-date  { font-family: var(--font-display); font-size: 11px; color: var(--fg3); display: flex; align-items: center; gap: 4px; }
+.task-date.overdue { color: #f87171; }
+.task-date.today   { color: var(--gy-orange); }
+
+/* actions */
+.task-actions { display: flex; gap: 4px; align-items: center; flex-shrink: 0; }
+
+/* ── Priority indicator ── */
+.prio-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 6px;
+}
+.prio-urgent  { background: #f87171; box-shadow: 0 0 6px rgba(248,113,113,.5); }
+.prio-high    { background: var(--gy-orange); }
+.prio-normal  { background: var(--fg3); }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(0,0,0,.65); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  padding: var(--sp-6);
+  opacity: 0; pointer-events: none;
+  transition: opacity var(--dur-med);
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: #1c1c1c; border: 1px solid var(--border-strong);
+  border-radius: var(--r-xl); padding: var(--sp-8);
+  width: 100%; max-width: 520px;
+  box-shadow: 0 24px 64px rgba(0,0,0,.6);
+  transform: translateY(12px);
+  transition: transform var(--dur-med) var(--ease-out);
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--sp-6); }
+.modal-title { font-weight: 700; font-size: 16px; color: var(--fg1); }
+.modal-body { display: flex; flex-direction: column; gap: var(--sp-5); }
+.modal-footer { display: flex; gap: var(--sp-3); justify-content: flex-end; margin-top: var(--sp-6); padding-top: var(--sp-5); border-top: 1px solid var(--border); }
+
+/* ── Form fields ── */
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label { font-size: 12px; font-weight: 600; color: var(--fg2); letter-spacing: .04em; }
+.form-control {
+  background: var(--bg-alt); border: 1px solid var(--border);
+  border-radius: var(--r-md); color: var(--fg1); font-size: 14px;
+  padding: 10px 12px; outline: none; width: 100%;
+  transition: border-color var(--dur-fast);
+}
+.form-control:focus { border-color: var(--gy-orange); }
+.form-control::placeholder { color: var(--fg3); }
+textarea.form-control { resize: vertical; min-height: 80px; line-height: 1.5; }
+select.form-control option { background: #1c1c1c; }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
+
+/* ── Segment control ── */
+.segment-control { display: flex; background: var(--bg-alt); border: 1px solid var(--border); border-radius: var(--r-md); padding: 3px; gap: 3px; }
+.segment-btn {
+  flex: 1; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;
+  background: transparent; color: var(--fg3);
+  transition: all var(--dur-fast);
+  text-align: center;
+}
+.segment-btn.active { background: var(--gy-orange); color: #fff; }
+.segment-btn:hover:not(.active) { color: var(--fg1); }
+
+/* ── Empty state ── */
+.empty-state {
+  text-align: center; padding: var(--sp-16) var(--sp-8);
+  display: flex; flex-direction: column; align-items: center; gap: var(--sp-4);
+}
+.empty-icon { font-size: 48px; opacity: .3; }
+.empty-title { font-weight: 700; font-size: 16px; color: var(--fg2); }
+.empty-sub   { font-size: 13px; color: var(--fg3); }
+
+/* ── Quick-add bar ── */
+#quick-add {
+  max-width: var(--container); margin: 0 auto;
+  padding: 0 var(--sp-6) var(--sp-4);
+}
+.quick-add-inner {
+  display: flex; align-items: center; gap: var(--sp-3);
+  background: var(--bg-surface); border: 1.5px solid var(--border);
+  border-radius: var(--r-lg); padding: var(--sp-3) var(--sp-4);
+  transition: border-color var(--dur-fast);
+}
+.quick-add-inner:focus-within { border-color: var(--gy-orange); }
+#quick-input {
+  flex: 1; background: transparent; border: 0; outline: none;
+  color: var(--fg1); font-size: 14px;
+}
+#quick-input::placeholder { color: var(--fg3); }
+.quick-divider { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
+
+/* ── Category colour pills ── */
+.cat-教學 { background: rgba(96,165,250,.15); color: #60a5fa; }
+.cat-行政 { background: rgba(221,86,28,.15); color: var(--gy-orange-400); }
+.cat-棒球 { background: rgba(74,222,128,.15); color: #4ade80; }
+.cat-會議 { background: rgba(192,132,252,.15); color: #c084fc; }
+.cat-活動 { background: rgba(250,204,21,.15); color: #facc15; }
+.cat-其他 { background: rgba(107,114,128,.15); color: #9ca3af; }
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .stats-inner { grid-template-columns: repeat(3, 1fr); }
+  .form-row { grid-template-columns: 1fr; }
+  #search-input { width: 160px; }
+}
+  </style>
+</head>
+<body>
+
+<div class="orange-bar"></div>
+
+<!-- Nav -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="#">
+      <div class="nav-brand-text">
+        <div class="school-name">柑園國中</div>
+        <div class="school-sub">Ganyuan Junior High School</div>
+      </div>
+    </a>
+    <div class="nav-spacer"></div>
+    <div style="text-align:right">
+      <div class="nav-title">行政代辦清單</div>
+      <div class="nav-subtitle" id="nav-date"></div>
+    </div>
+    <button class="btn btn-ghost" id="sync-btn" onclick="sheetsSync()" style="font-size:12px;padding:7px 12px">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      <span id="sync-label">連線 Google Sheets</span>
+    </button>
+    <button class="btn btn-primary" onclick="openModal()" style="margin-left:4px">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      新增任務
+    </button>
+  </div>
+</nav>
+
+<!-- Stats bar -->
+<div id="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <div class="stat-value accent" id="stat-total">0</div>
+      <div class="stat-label eyebrow">待辦總數</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value danger" id="stat-overdue">0</div>
+      <div class="stat-label eyebrow">已逾期</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value accent" id="stat-today">0</div>
+      <div class="stat-label eyebrow">今日到期</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value" id="stat-inprogress">0</div>
+      <div class="stat-label eyebrow">進行中</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value success" id="stat-done">0</div>
+      <div class="stat-label eyebrow">已完成</div>
+    </div>
+  </div>
+</div>
+
+<!-- Toolbar -->
+<div id="toolbar">
+  <div class="filter-row" id="cat-filters">
+    <button class="filter-btn active" data-cat="全部">全部</button>
+    <button class="filter-btn" data-cat="教學">📚 教學</button>
+    <button class="filter-btn" data-cat="行政">📋 行政</button>
+    <button class="filter-btn" data-cat="棒球">⚾ 棒球</button>
+    <button class="filter-btn" data-cat="會議">🗓 會議</button>
+    <button class="filter-btn" data-cat="活動">🎉 活動</button>
+    <button class="filter-btn" data-cat="其他">📌 其他</button>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <div class="search-wrap">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="search-input" placeholder="搜尋任務…">
+    </div>
+    <select id="sort-select" class="form-control" style="width:auto;padding:7px 10px;font-size:12px">
+      <option value="dueDate">依到期日</option>
+      <option value="priority">依優先順序</option>
+      <option value="created">依建立時間</option>
+      <option value="cat">依類別</option>
+    </select>
+    <button class="btn btn-ghost" onclick="clearDone()" style="font-size:12px;padding:7px 12px">
+      清除已完成
+    </button>
+  </div>
+</div>
+
+<!-- Quick add -->
+<div id="quick-add">
+  <div class="quick-add-inner">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--fg3);flex-shrink:0"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    <input type="text" id="quick-input" placeholder="快速新增任務… （按 Enter 送出，類別預設「行政」）">
+    <div class="quick-divider"></div>
+    <select id="quick-cat" class="form-control" style="width:auto;padding:5px 8px;font-size:12px;background:transparent;border:0">
+      <option value="教學">教學</option>
+      <option value="行政" selected>行政</option>
+      <option value="棒球">棒球</option>
+      <option value="會議">會議</option>
+      <option value="活動">活動</option>
+      <option value="其他">其他</option>
+    </select>
+  </div>
+</div>
+
+<!-- Main content -->
+<div id="main">
+  <div id="task-container"></div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title">新增任務</span>
+      <button class="btn-icon" onclick="closeModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">任務名稱 <span style="color:var(--gy-orange)">*</span></label>
+        <input type="text" id="f-title" class="form-control" placeholder="例：繳交第二次段考成績">
+      </div>
+      <div class="form-group">
+        <label class="form-label">說明（選填）</label>
+        <textarea id="f-desc" class="form-control" placeholder="補充說明或備注…"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">類別</label>
+          <select id="f-cat" class="form-control">
+            <option value="教學">📚 教學</option>
+            <option value="行政" selected>📋 行政</option>
+            <option value="棒球">⚾ 棒球</option>
+            <option value="會議">🗓 會議</option>
+            <option value="活動">🎉 活動</option>
+            <option value="其他">📌 其他</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">到期日</label>
+          <input type="date" id="f-due" class="form-control">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">優先順序</label>
+        <div class="segment-control" id="priority-control">
+          <button class="segment-btn" data-prio="urgent" onclick="selectPrio(this)">🔴 緊急</button>
+          <button class="segment-btn active" data-prio="high" onclick="selectPrio(this)">🟠 重要</button>
+          <button class="segment-btn" data-prio="normal" onclick="selectPrio(this)">⚪ 一般</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">狀態</label>
+        <div class="segment-control" id="status-control">
+          <button class="segment-btn active" data-status="todo" onclick="selectStatus(this)">待辦</button>
+          <button class="segment-btn" data-status="doing" onclick="selectStatus(this)">進行中</button>
+          <button class="segment-btn" data-status="done" onclick="selectStatus(this)">已完成</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveTask()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        儲存
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── State ── */
+let tasks = JSON.parse(localStorage.getItem('gy-todo-v1') || '[]');
+let editId = null;
+let filterCat = '全部';
+let searchQ = '';
+let sortBy = 'dueDate';
+
+const TODAY = (() => { const d = new Date(); d.setHours(0,0,0,0); return d; })();
+const TOMORROW = new Date(TODAY); TOMORROW.setDate(TOMORROW.getDate() + 1);
+
+function saveLocal() { localStorage.setItem('gy-todo-v1', JSON.stringify(tasks)); }
+function save() { saveLocal(); if (_accessToken) sheetsSyncUp(); }
+
+function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+/* ── Date helpers ── */
+function parseDue(str) {
+  if (!str) return null;
+  const [y,m,d] = str.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+function dueDateClass(str) {
+  if (!str) return '';
+  const d = parseDue(str);
+  if (d < TODAY) return 'overdue';
+  if (d.getTime() === TODAY.getTime()) return 'today';
+  return '';
+}
+function formatDue(str) {
+  if (!str) return null;
+  const d = parseDue(str);
+  if (d < TODAY) return `逾期 ${str}`;
+  if (d.getTime() === TODAY.getTime()) return `今日到期`;
+  const diff = Math.round((d - TODAY) / 86400000);
+  if (diff <= 3) return `${diff} 天後 · ${str}`;
+  return str;
+}
+
+/* ── Sort & filter ── */
+function getVisible() {
+  let list = tasks.filter(t => {
+    if (filterCat !== '全部' && t.cat !== filterCat) return false;
+    if (searchQ) {
+      const q = searchQ.toLowerCase();
+      if (!t.title.toLowerCase().includes(q) && !(t.desc||'').toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
+  const prioOrder = { urgent:0, high:1, normal:2 };
+  const statusOrder = { overdue:-1, todo:0, doing:1, done:2 };
+  if (sortBy === 'dueDate') {
+    list.sort((a,b) => {
+      if (a.status==='done' && b.status!=='done') return 1;
+      if (b.status==='done' && a.status!=='done') return -1;
+      if (!a.due && !b.due) return 0;
+      if (!a.due) return 1;
+      if (!b.due) return -1;
+      return a.due.localeCompare(b.due);
+    });
+  } else if (sortBy === 'priority') {
+    list.sort((a,b) => {
+      if (a.status==='done' && b.status!=='done') return 1;
+      if (b.status==='done' && a.status!=='done') return -1;
+      return (prioOrder[a.prio]||2) - (prioOrder[b.prio]||2);
+    });
+  } else if (sortBy === 'created') {
+    list.sort((a,b) => b.created - a.created);
+  } else if (sortBy === 'cat') {
+    list.sort((a,b) => a.cat.localeCompare(b.cat));
+  }
+  return list;
+}
+
+function groupVisible(list) {
+  const groups = { '逾期': [], '今日': [], '本週': [], '未來': [], '無到期日': [], '已完成': [] };
+  const now = new Date(TODAY);
+  const endOfWeek = new Date(TODAY); endOfWeek.setDate(endOfWeek.getDate() + 7);
+
+  list.forEach(t => {
+    if (t.status === 'done') { groups['已完成'].push(t); return; }
+    if (!t.due) { groups['無到期日'].push(t); return; }
+    const d = parseDue(t.due);
+    if (d < TODAY) groups['逾期'].push(t);
+    else if (d.getTime() === TODAY.getTime()) groups['今日'].push(t);
+    else if (d < endOfWeek) groups['本週'].push(t);
+    else groups['未來'].push(t);
+  });
+  return groups;
+}
+
+/* ── Render ── */
+function render() {
+  updateStats();
+  const list = getVisible();
+  const container = document.getElementById('task-container');
+
+  if (list.length === 0) {
+    container.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">✅</div>
+      <div class="empty-title">沒有符合的任務</div>
+      <div class="empty-sub">${filterCat !== '全部' ? '試試切換其他類別' : '點擊右上角「新增任務」開始新增'}</div>
+    </div>`;
+    return;
+  }
+
+  if (sortBy === 'dueDate') {
+    const groups = groupVisible(list);
+    const groupOrder = ['逾期','今日','本週','未來','無到期日','已完成'];
+    const groupLabels = { '逾期':'🔴 逾期', '今日':'🟠 今日到期', '本週':'📅 本週', '未來':'📆 未來', '無到期日':'📌 無到期日', '已完成':'✅ 已完成' };
+    let html = '';
+    groupOrder.forEach(g => {
+      if (!groups[g] || groups[g].length === 0) return;
+      html += `<div class="group-header">
+        <span class="group-header-label">${groupLabels[g]}</span>
+        <span class="group-header-line"></span>
+        <span class="group-header-count">${groups[g].length}</span>
+      </div>
+      <div class="task-list">${groups[g].map(renderTask).join('')}</div>`;
+    });
+    container.innerHTML = html;
+  } else {
+    container.innerHTML = `<div style="margin-top:var(--sp-3)"><div class="task-list">${list.map(renderTask).join('')}</div></div>`;
+  }
+}
+
+function renderTask(t) {
+  const dc = dueDateClass(t.due);
+  const isDone = t.status === 'done';
+  const prioClass = { urgent:'prio-urgent', high:'prio-high', normal:'prio-normal' }[t.prio] || 'prio-normal';
+  const catTag = `<span class="tag cat-${t.cat}" style="font-size:10px;padding:2px 8px">${t.cat}</span>`;
+
+  let statusTag = '';
+  if (t.status === 'doing') statusTag = `<span class="tag tag-blue" style="font-size:10px;padding:2px 8px">進行中</span>`;
+
+  let dueLine = '';
+  if (t.due) {
+    const label = formatDue(t.due);
+    const cls = dc ? ` ${dc}` : '';
+    const icon = dc === 'overdue'
+      ? `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`
+      : `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
+    dueLine = `<span class="task-date${cls}">${icon}${label}</span>`;
+  }
+
+  return `<div class="task-item ${dc} ${isDone?'done':''}" data-id="${t.id}">
+    <div class="task-check ${isDone?'checked':''}" onclick="toggleDone('${t.id}',event)">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="task-body">
+      <div class="task-title">${escHtml(t.title)}</div>
+      ${t.desc ? `<div class="task-desc">${escHtml(t.desc)}</div>` : ''}
+      <div class="task-meta">
+        ${catTag}
+        ${statusTag}
+        ${dueLine}
+      </div>
+    </div>
+    <div class="task-actions">
+      <button class="btn-icon" title="編輯" onclick="editTask('${t.id}',event)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
+      <button class="btn-icon" title="刪除" onclick="deleteTask('${t.id}',event)" style="color:#f87171">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+      </button>
+    </div>
+  </div>`;
+}
+
+function updateStats() {
+  const active = tasks.filter(t => t.status !== 'done');
+  const done   = tasks.filter(t => t.status === 'done');
+  const overdue = active.filter(t => t.due && parseDue(t.due) < TODAY);
+  const today   = active.filter(t => t.due && parseDue(t.due).getTime() === TODAY.getTime());
+  const doing   = active.filter(t => t.status === 'doing');
+
+  document.getElementById('stat-total').textContent = active.length;
+  document.getElementById('stat-overdue').textContent = overdue.length;
+  document.getElementById('stat-today').textContent = today.length;
+  document.getElementById('stat-inprogress').textContent = doing.length;
+  document.getElementById('stat-done').textContent = done.length;
+}
+
+/* ── Task actions ── */
+function toggleDone(id, e) {
+  e.stopPropagation();
+  const t = tasks.find(x => x.id === id);
+  if (!t) return;
+  t.status = t.status === 'done' ? 'todo' : 'done';
+  save(); render();
+}
+
+function deleteTask(id, e) {
+  e.stopPropagation();
+  if (!confirm('確定刪除此任務？')) return;
+  tasks = tasks.filter(x => x.id !== id);
+  save(); render();
+}
+
+function clearDone() {
+  const count = tasks.filter(t => t.status === 'done').length;
+  if (count === 0) return;
+  if (!confirm(`清除 ${count} 筆已完成任務？`)) return;
+  tasks = tasks.filter(t => t.status !== 'done');
+  save(); render();
+}
+
+function editTask(id, e) {
+  e && e.stopPropagation();
+  const t = tasks.find(x => x.id === id);
+  if (!t) return;
+  editId = id;
+  document.getElementById('modal-title').textContent = '編輯任務';
+  document.getElementById('f-title').value = t.title;
+  document.getElementById('f-desc').value = t.desc || '';
+  document.getElementById('f-cat').value = t.cat;
+  document.getElementById('f-due').value = t.due || '';
+  document.querySelectorAll('#priority-control .segment-btn').forEach(b => b.classList.toggle('active', b.dataset.prio === t.prio));
+  document.querySelectorAll('#status-control .segment-btn').forEach(b => b.classList.toggle('active', b.dataset.status === t.status));
+  openModal();
+}
+
+/* ── Modal ── */
+function openModal() {
+  document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('f-title').focus(), 50);
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  resetForm();
+}
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+function resetForm() {
+  editId = null;
+  document.getElementById('modal-title').textContent = '新增任務';
+  document.getElementById('f-title').value = '';
+  document.getElementById('f-desc').value = '';
+  document.getElementById('f-cat').value = '行政';
+  document.getElementById('f-due').value = '';
+  document.querySelectorAll('#priority-control .segment-btn').forEach(b => b.classList.toggle('active', b.dataset.prio === 'high'));
+  document.querySelectorAll('#status-control .segment-btn').forEach(b => b.classList.toggle('active', b.dataset.status === 'todo'));
+}
+
+function selectPrio(btn) {
+  document.querySelectorAll('#priority-control .segment-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function selectStatus(btn) {
+  document.querySelectorAll('#status-control .segment-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function saveTask() {
+  const title = document.getElementById('f-title').value.trim();
+  if (!title) { document.getElementById('f-title').focus(); return; }
+  const prio   = document.querySelector('#priority-control .segment-btn.active')?.dataset.prio || 'high';
+  const status = document.querySelector('#status-control .segment-btn.active')?.dataset.status || 'todo';
+  const data = {
+    title,
+    desc:    document.getElementById('f-desc').value.trim(),
+    cat:     document.getElementById('f-cat').value,
+    due:     document.getElementById('f-due').value || null,
+    prio, status,
+  };
+  if (editId) {
+    const t = tasks.find(x => x.id === editId);
+    Object.assign(t, data);
+  } else {
+    tasks.unshift({ id: genId(), created: Date.now(), ...data });
+  }
+  save(); closeModal(); render();
+}
+
+/* ── Quick add ── */
+document.getElementById('quick-input').addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const title = e.target.value.trim();
+  if (!title) return;
+  const cat = document.getElementById('quick-cat').value;
+  tasks.unshift({ id: genId(), created: Date.now(), title, desc:'', cat, due:null, prio:'high', status:'todo' });
+  save(); render();
+  e.target.value = '';
+});
+
+/* ── Filters / search / sort ── */
+document.getElementById('cat-filters').addEventListener('click', e => {
+  const btn = e.target.closest('[data-cat]');
+  if (!btn) return;
+  filterCat = btn.dataset.cat;
+  document.querySelectorAll('[data-cat]').forEach(b => b.classList.toggle('active', b.dataset.cat === filterCat));
+  render();
+});
+
+document.getElementById('search-input').addEventListener('input', e => {
+  searchQ = e.target.value;
+  render();
+});
+
+document.getElementById('sort-select').addEventListener('change', e => {
+  sortBy = e.target.value;
+  render();
+});
+
+/* ── Keyboard shortcut ── */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'n' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); openModal(); }
+});
+
+/* ── Nav date ── */
+function updateNavDate() {
+  const now = new Date();
+  const wd = ['日','一','二','三','四','五','六'][now.getDay()];
+  document.getElementById('nav-date').textContent =
+    `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} 星期${wd}`;
+}
+updateNavDate();
+setInterval(updateNavDate, 60000);
+
+/* ── Util ── */
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ── Google Sheets 整合 ─────────────────────────── */
+const SSID = '1Wddf01_EoZHFd_dI6S8qUjAnTyp9LMWGSl_A5NZdGzU';
+const CLIENT_ID = '1031365946878-aa2uo8ud68s2encb9huvh1j7h7tmh3ih.apps.googleusercontent.com';
+const SHEET_NAME = '工作表1';
+const HEADERS = ['id','title','desc','cat','due','prio','status','created'];
+
+let _tokenClient = null;
+let _accessToken  = null;
+
+function initSheetsAuth() {
+  if (typeof google === 'undefined') return;
+  _tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: 'https://www.googleapis.com/auth/spreadsheets',
+    callback: async (resp) => {
+      if (resp.error) { setSyncLabel('連線失敗'); return; }
+      _accessToken = resp.access_token;
+      await sheetsSetup();
+      await sheetsSyncDown();
+    },
+  });
+}
+
+async function ensureAuth() {
+  if (_accessToken) return true;
+  if (!_tokenClient) { alert('Google 授權元件尚未載入，請稍後再試'); return false; }
+  _tokenClient.requestAccessToken({ prompt: 'consent' });
+  return false; // callback will continue
+}
+
+function setSyncLabel(text, spinning = false) {
+  document.getElementById('sync-label').textContent = text;
+  const icon = document.querySelector('#sync-btn svg');
+  icon.style.animation = spinning ? 'spin 1s linear infinite' : '';
+}
+
+/* First-time setup: rename sheet + write headers if A1 is empty */
+async function sheetsSetup() {
+  setSyncLabel('設定中…', true);
+  try {
+    // Rename spreadsheet
+    await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SSID}:batchUpdate`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${_accessToken}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requests: [{ updateSpreadsheetProperties: {
+        properties: { title: '行政代辦清單' }, fields: 'title'
+      }}]})
+    });
+    // Check if headers exist
+    const r = await fetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${SSID}/values/${encodeURIComponent(SHEET_NAME+'!A1:H1')}`,
+      { headers: { Authorization: `Bearer ${_accessToken}` } }
+    );
+    const d = await r.json();
+    if (!d.values || !d.values[0] || d.values[0][0] !== 'id') {
+      // Write headers
+      await fetch(
+        `https://sheets.googleapis.com/v4/spreadsheets/${SSID}/values/${encodeURIComponent(SHEET_NAME+'!A1:H1')}?valueInputOption=RAW`,
+        {
+          method: 'PUT',
+          headers: { Authorization: `Bearer ${_accessToken}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ values: [HEADERS] })
+        }
+      );
+    }
+  } catch(e) { console.error('setup error', e); }
+}
+
+/* Sync down: read sheet → replace localStorage tasks */
+async function sheetsSyncDown() {
+  setSyncLabel('讀取中…', true);
+  try {
+    const r = await fetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${SSID}/values/${encodeURIComponent(SHEET_NAME+'!A2:H')}`,
+      { headers: { Authorization: `Bearer ${_accessToken}` } }
+    );
+    const d = await r.json();
+    if (d.values && d.values.length > 0) {
+      tasks = d.values
+        .filter(row => row[0])
+        .map(row => ({
+          id:      row[0] || genId(),
+          title:   row[1] || '',
+          desc:    row[2] || '',
+          cat:     row[3] || '行政',
+          due:     row[4] || null,
+          prio:    row[5] || 'high',
+          status:  row[6] || 'todo',
+          created: parseInt(row[7]) || Date.now(),
+        }));
+      saveLocal();
+      render();
+    }
+    setSyncLabel('已同步 ✓');
+    document.getElementById('sync-btn').style.borderColor = '#4ade80';
+  } catch(e) {
+    console.error('sync down error', e);
+    setSyncLabel('同步失敗');
+  }
+}
+
+/* Sync up: write all local tasks to sheet */
+async function sheetsSyncUp() {
+  if (!_accessToken) return;
+  try {
+    const rows = tasks.map(t => [t.id, t.title, t.desc||'', t.cat, t.due||'', t.prio, t.status, t.created]);
+    // Clear old data first
+    await fetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${SSID}/values/${encodeURIComponent(SHEET_NAME+'!A2:H')}:clear`,
+      { method: 'POST', headers: { Authorization: `Bearer ${_accessToken}` } }
+    );
+    if (rows.length > 0) {
+      await fetch(
+        `https://sheets.googleapis.com/v4/spreadsheets/${SSID}/values/${encodeURIComponent(SHEET_NAME+'!A2:H')}?valueInputOption=RAW`,
+        {
+          method: 'PUT',
+          headers: { Authorization: `Bearer ${_accessToken}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ values: rows })
+        }
+      );
+    }
+    setSyncLabel('已同步 ✓');
+    document.getElementById('sync-btn').style.borderColor = '#4ade80';
+  } catch(e) {
+    console.error('sync up error', e);
+    setSyncLabel('同步失敗');
+  }
+}
+
+/* Main sync button handler */
+async function sheetsSync() {
+  if (!_accessToken) {
+    await ensureAuth();
+  } else {
+    setSyncLabel('同步中…', true);
+    await sheetsSyncUp();
+  }
+}
+
+
+/* Spin keyframe */
+const style = document.createElement('style');
+style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+document.head.appendChild(style);
+
+/* ── Demo data (only if empty) ── */
+if (tasks.length === 0) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const fmt = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const addDay = (d, n) => { const x=new Date(d); x.setDate(x.getDate()+n); return x; };
+  tasks = [
+    { id:genId(), created:Date.now(), title:'繳交期中考成績', desc:'含補考成績一併輸入系統', cat:'教學', due:fmt(today), prio:'urgent', status:'todo' },
+    { id:genId(), created:Date.now(), title:'出席升旗典禮', desc:'週一早上 7:30', cat:'棒球', due:fmt(addDay(today,1)), prio:'normal', status:'todo' },
+    { id:genId(), created:Date.now(), title:'教師評鑑資料彙整', desc:'需附課堂觀察表及自評表', cat:'行政', due:fmt(addDay(today,3)), prio:'high', status:'doing' },
+    { id:genId(), created:Date.now(), title:'課程計畫送交教務處', desc:'含教學進度表', cat:'教學', due:fmt(addDay(today,5)), prio:'high', status:'todo' },
+    { id:genId(), created:Date.now(), title:'期末校務會議', desc:'地點：行政樓會議室', cat:'會議', due:fmt(addDay(today,7)), prio:'normal', status:'todo' },
+    { id:genId(), created:Date.now(), title:'處理學生申訴案件', desc:'', cat:'棒球', due:fmt(addDay(today,-2)), prio:'urgent', status:'todo' },
+    { id:genId(), created:Date.now(), title:'訂購班級耗材', desc:'向總務處填寫申請單', cat:'行政', due:null, prio:'normal', status:'todo' },
+    { id:genId(), created:Date.now(), title:'運動會活動規劃', desc:'提案需含預算概估', cat:'活動', due:fmt(addDay(today,14)), prio:'high', status:'todo' },
+    { id:genId(), created:Date.now(), title:'繳交上週週記批改', desc:'', cat:'教學', due:fmt(addDay(today,-1)), prio:'high', status:'done' },
+  ];
+  save();
+}
+
+render();
+</script>
+</body>
+</html>
