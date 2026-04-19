@@ -336,6 +336,41 @@ select.form-control option { background: #1c1c1c; }
 #quick-input::placeholder { color: var(--fg3); }
 .quick-divider { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
 
+/* ── Status stepper ── */
+.status-stepper {
+  display: inline-flex; align-items: center; gap: 0;
+  user-select: none;
+}
+.step-node {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  cursor: pointer; position: relative;
+}
+.step-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid var(--border-strong);
+  background: var(--bg-alt);
+  transition: all .15s;
+  flex-shrink: 0;
+}
+.step-label {
+  font-size: 9px; font-weight: 600; letter-spacing: .02em;
+  color: var(--fg3); white-space: nowrap;
+  transition: color .15s;
+}
+.step-node:hover .step-dot { border-color: var(--gy-orange-400); }
+.step-node:hover .step-label { color: var(--fg2); }
+.step-node.active .step-dot { background: var(--gy-orange); border-color: var(--gy-orange); box-shadow: 0 0 0 3px rgba(221,86,28,.2); }
+.step-node.active .step-label { color: var(--gy-orange); font-weight: 700; }
+.step-node.passed .step-dot { background: var(--fg3); border-color: var(--fg3); }
+.step-node.passed .step-label { color: var(--fg3); }
+.step-line {
+  width: 28px; height: 2px;
+  background: var(--border-strong);
+  margin-bottom: 12px; flex-shrink: 0;
+  transition: background .15s;
+}
+.step-line.filled { background: var(--fg3); }
+
 /* ── Category colour pills ── */
 .cat-教學 { background: rgba(96,165,250,.15); color: #60a5fa; }
 .cat-行政 { background: rgba(221,86,28,.15); color: var(--gy-orange-400); }
@@ -651,13 +686,21 @@ function renderTask(t) {
   const prioClass = { urgent:'prio-urgent', high:'prio-high', normal:'prio-normal' }[t.prio] || 'prio-normal';
   const catTag = `<span class="tag cat-${t.cat}" style="font-size:10px;padding:2px 8px">${t.cat}</span>`;
 
-  const statusMap = {
-    todo:  { label:'待辦',  cls:'tag-gray', next:'doing' },
-    doing: { label:'進行中', cls:'tag-blue', next:'done'  },
-    done:  { label:'已完成', cls:'tag-green', next:'todo' },
-  };
-  const sm = statusMap[t.status] || statusMap.todo;
-  const statusTag = `<button class="tag ${sm.cls}" style="font-size:10px;padding:2px 10px;cursor:pointer;border:0;transition:opacity .12s" onclick="cycleStatus('${t.id}',event)" title="點擊切換狀態">${sm.label}</button>`;
+  const steps = ['todo','doing','done'];
+  const stepLabels = { todo:'待辦', doing:'進行中', done:'完成' };
+  const curIdx = steps.indexOf(t.status);
+  const stepper = `<div class="status-stepper">
+    ${steps.map((s, i) => {
+      const cls = i < curIdx ? 'passed' : i === curIdx ? 'active' : '';
+      const line = i < steps.length - 1
+        ? `<div class="step-line ${i < curIdx ? 'filled' : ''}"></div>`
+        : '';
+      return `<div class="step-node ${cls}" onclick="setStatus('${t.id}','${s}',event)" title="${stepLabels[s]}">
+        <div class="step-dot"></div>
+        <span class="step-label">${stepLabels[s]}</span>
+      </div>${line}`;
+    }).join('')}
+  </div>`;
 
   let dueLine = '';
   if (t.due) {
@@ -678,9 +721,9 @@ function renderTask(t) {
       ${t.desc ? `<div class="task-desc">${escHtml(t.desc)}</div>` : ''}
       <div class="task-meta">
         ${catTag}
-        ${statusTag}
         ${dueLine}
       </div>
+      ${stepper}
     </div>
     <div class="task-actions">
       <button class="btn-icon" title="編輯" onclick="editTask('${t.id}',event)">
@@ -708,12 +751,11 @@ function updateStats() {
 }
 
 /* ── Task actions ── */
-function cycleStatus(id, e) {
+function setStatus(id, status, e) {
   e.stopPropagation();
   const t = tasks.find(x => x.id === id);
   if (!t) return;
-  const next = { todo:'doing', doing:'done', done:'todo' };
-  t.status = next[t.status] || 'todo';
+  t.status = status;
   save(); render();
 }
 
