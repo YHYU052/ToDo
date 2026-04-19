@@ -228,6 +228,7 @@ input, textarea, select { font-family: var(--font-sans); }
 .task-item.status-doing:hover { background: rgba(221,86,28,.25); border-color: rgba(221,86,28,.6); }
 .task-item.status-done  { background: #161616; opacity: .6; }
 .task-item.status-done .task-title { text-decoration: line-through; color: var(--fg3); }
+.task-item.prio-urgent .task-title { color: #f87171; }
 
 /* checkbox */
 .task-check {
@@ -729,7 +730,7 @@ function renderTask(t) {
     dueLine = `<span class="task-date${cls}">${icon}${label}</span>`;
   }
 
-  return `<div class="task-item ${dc} status-${t.status}" data-id="${t.id}">
+  return `<div class="task-item ${dc} status-${t.status}${t.prio==='urgent'?' prio-urgent':''}" data-id="${t.id}">
     <div class="task-check ${isDone?'checked':''}" onclick="toggleDone('${t.id}',event)">
       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
     </div>
