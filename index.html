@@ -269,8 +269,14 @@ input, textarea, select { font-family: var(--font-sans); }
 
 /* status backgrounds */
 .task-item.status-todo  { background: #1e1e1e; }
-.task-item.status-doing { background: rgba(221,86,28,.18); border-color: rgba(221,86,28,.4); }
-.task-item.status-doing:hover { background: rgba(221,86,28,.25); border-color: rgba(221,86,28,.6); }
+.task-item.status-doing { background: rgba(233,117,64,.28); border-color: rgba(233,117,64,.55); }
+.task-item.status-doing:hover { background: rgba(233,117,64,.36); border-color: rgba(233,117,64,.75); }
+.task-item.status-doing .task-title { color: #ffe4d0; }
+.task-item.status-doing .task-desc-col { color: #f5c4a8; border-color: rgba(233,117,64,.3); }
+.task-item.status-doing .task-date { color: #f5c4a8; }
+.task-item.status-doing .step-label { color: #f5c4a8; }
+.task-item.status-doing .step-node.active .step-label { color: #fff; }
+.task-item.status-doing .status-stepper { border-color: rgba(233,117,64,.3); }
 .task-item.status-done  { background: #161616; opacity: .6; }
 .task-item.status-done .task-title { text-decoration: line-through; color: var(--fg3); }
 .task-item.prio-urgent .task-title { color: #f87171; }
